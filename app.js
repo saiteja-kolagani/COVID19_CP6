@@ -7,6 +7,7 @@ const app = express()
 let db = null
 app.use(express.json())
 
+//Connecting To Database
 const initializeDBAndServer = async () => {
   try {
     db = await open({
@@ -23,6 +24,7 @@ const initializeDBAndServer = async () => {
 }
 initializeDBAndServer()
 
+//Coverting To Database Object To Response Object
 const convertDBObjToResponseObj = dbObj => {
   return {
     stateId: dbObj.state_id,
@@ -31,6 +33,7 @@ const convertDBObjToResponseObj = dbObj => {
   }
 }
 
+//API For Returns a list of all states in the state table
 app.get('/states/', async (request, response) => {
   try {
     const getStatesQuery = `
@@ -49,6 +52,7 @@ app.get('/states/', async (request, response) => {
   }
 })
 
+//API FOR Returns a state based on the state ID
 app.get('/states/:stateId/', async (request, response) => {
   const {stateId} = request.params
   try {
@@ -68,6 +72,7 @@ app.get('/states/:stateId/', async (request, response) => {
   }
 })
 
+//API For Create a district in the district table, district_id is auto-incremented
 app.post('/districts/', async (request, response) => {
   const bodyDetails = request.body
   const {districtName, stateId, cases, cured, active, deaths} = bodyDetails
@@ -92,6 +97,7 @@ app.post('/districts/', async (request, response) => {
   }
 })
 
+//Coverting Database District Object To Response Object
 const convertDBDistrictObjToResponseObj = dbObj => {
   return {
     districtId: dbObj.district_id,
@@ -104,6 +110,7 @@ const convertDBDistrictObjToResponseObj = dbObj => {
   }
 }
 
+//API FOR Returns a district based on the district ID
 app.get('/districts/:districtId/', async (request, response) => {
   const {districtId} = request.params
   try {
@@ -123,6 +130,7 @@ app.get('/districts/:districtId/', async (request, response) => {
   }
 })
 
+//API FOR Deletes a district from the district table based on the district ID
 app.delete('/districts/:districtId/', async (request, response) => {
   const {districtId} = request.params
   try {
@@ -140,6 +148,7 @@ app.delete('/districts/:districtId/', async (request, response) => {
   }
 })
 
+//API FOR Updates the details of a specific district based on the district ID
 app.put('/districts/:districtId/', async (request, response) => {
   const {districtId} = request.params
   const bodyDetails = request.body
@@ -174,6 +183,7 @@ app.put('/districts/:districtId/', async (request, response) => {
   }
 })
 
+//Converting Statistics Object To Response Object
 const convertStatisticsObj = obj => {
   return {
     totalCases: obj['SUM(cases)'],
@@ -183,6 +193,7 @@ const convertStatisticsObj = obj => {
   }
 }
 
+//API For Returns the statistics of total cases, cured, active, deaths of a specific state based on state ID
 app.get('/states/:stateId/stats/', async (request, response) => {
   const {stateId} = request.params
   try {
@@ -205,6 +216,7 @@ app.get('/states/:stateId/stats/', async (request, response) => {
   }
 })
 
+//API FOR Returns an object containing the state name of a district based on the district ID
 app.get('/districts/:districtId/details/', async (request, response) => {
   const {districtId} = request.params
   try {
